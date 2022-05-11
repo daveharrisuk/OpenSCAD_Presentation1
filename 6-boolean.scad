@@ -11,33 +11,31 @@
      Creates the intersection of all child 
      nodes. Keeps all overlapping portions.
 */
-$fn = 40;
+$fn = 80;
 
 intersection()
 {
-  sphere( r = 10 ); // round off the ends
+  color("yellow") sphere( 10.2 );
   
   difference()
   {
     union()
-    {    // sum 1st and 2nd children
-      color("blue") 
-        cylinder( r=5, h=20, center=true);
+    {
+      color("blue")
+        cylinder( r = 10.1, h = 11
+                , center=true ) ;
       
-      rotate( [0, 135, -45] )
-        cylinder(r=2, h=25, center=true);
+      color("green")
+        cylinder( r = 6, h = 17
+                , center=true );
     } // end union
     
-    // cut-out the next 2 children
-  
-    rotate( [0, 45, -45] )
-      cylinder( r=2, h=25, center=true);
+    /* cut out a cone */
+    cylinder( r1 = 2, r2 = 4, h = 22
+             , center=true
+    );
     
-    translate( [0, 0, -10] )
-      rotate( [0, 45, -45] )
-        cylinder( r=1, h=20, center=true); 
   } // end difference
-  
 } // end intersection
 
 //---------EoF-------
