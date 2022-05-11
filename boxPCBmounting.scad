@@ -1,72 +1,69 @@
 ///@file boxPCBmounting.scad
 /*
 An open box with...
-- lid screw holes
 - 4 PCB mounting pillars (see param pcb)
 - 4 or 6 lid mountings (see param pillar6)
+- lid screw holes
 - param lid=true give the lid
  
 NOT included on Render...
 - The PCB (but see var pcb)
 - screw indicators
 
-    © Dave Harris 2022
+© Dave Harris 2022
     
-  Add to project folder and... 
-    use"boxPCBmounting.scad";
+  Add file to project folder and... 
+    use<boxPCBmounting.scad>;
 */
 
 
-boxPCBmounting( // Local test module
-      lid = true
-    , name ="CANMIO"
+boxPCBmounting( // Local test
+      lid = false
+    , name ="LocalTest"
     , screwR = 1.2
   );
-  //all other params use defaults
 
 
-/* module() is equivalent to 
-   subroutine but has no return value.
-*/
+
 module boxPCBmounting(
-      name = "TestBox" //name engraved on base
-    , nameSize = 5
-    , lid = false   // false=box, true=lid
-    , pcb = true    // true adds PCB mounts
+      name = "TestBox"//name engraved on base
+    , nameSize = 5    // font size
+    , lid = false     // false=box, true=lid
+    , pcb = true      // true adds PCB mounts
     , pillar6 = false // false=4, true=6
-    , pillarR = 2.5
-    , wall = 1.5    // floor is same
-    , screwR = 0.6
+    , pillarR = 2.5   // corner radius
+    , wall = 1.5  // Thickness, floor is same
+    , screwR = 0.6 // screw hole radius
     , pcbH = 17   // include PCB thickness
-    , pcbY = 80   // pcbY s/b GT pcbX
-    , pcbX = 50
-    , pcbThick = 1.5
+    , pcbY = 80   // pcb dimensions
+    , pcbX = 50   //   pcbY s/b GT pcbX
+    , pcbThick = 1.6 // pcb thickness
     , pcbHoleInset = 3 //center from edge
   )
 {
   copyright = "©DaveHarris'22";
   copyrightSize = 3;
 
-  pcbHoleCenY = pcbY - (pcbHoleInset *2);
-  pcbHoleCenX = pcbX - (pcbHoleInset *2);
+  pcbHoleCenY = pcbY -(pcbHoleInset *2);
+  pcbHoleCenX = pcbX -(pcbHoleInset *2);
 
   pcbPillarR = 3.5;
   pcbPillarH = 2.5;
 
-  innerH = lid ? 0 : pcbH + pcbPillarH;
+  innerH = lid ? 0 : pcbH +pcbPillarH;
   innerY = pcbY;
-  innerX = pcbX + (pillar6 ? 1 : -1);
+  innerX = pcbX +(pillar6 ? 1 : -1);
 
   cableHoleH = innerH /2;
 
-  dimX = (innerX /2) + pillarR;
-  dimY = (innerY /2) + pillarR;
+  dimX = (innerX /2) +pillarR;
+  dimY = (innerY /2) +pillarR;
 
-  assert( pcbX < pcbY ); // check
-
-  echo("lid=",lid,"pcb=",pcb
-    ,"H=",pcbH,"X=",pcbX,"Y=",pcbY);
-
+  echo(name,"lid",lid,"pcb",pcb,pcbX,pcbY);
+  
+  assert( pcbX < pcbY ); // valid check
+  assert( pcbX > (pcbThick *3));
+  
   $fn = 40;
 
   difference() // outer
@@ -131,19 +128,8 @@ module boxPCBmounting(
         , wall ]
     ) linear_extrude( wall /2
           , center=true
-      ) text(copyright, copyrightSize );
-
-    
-    translate( // cut cable hole
-        [ -(pcbHoleCenX /2) +pcbHoleInset
-        , - innerY
-        , pcbPillarH + pcbThick ]
-    ) cube(
-        [ pcbHoleCenX - (pcbHoleInset *2)
-        , innerY *2
-        , cableHoleH ], center=false 
-      );
-    
+      ) text(copyright, copyrightSize ); 
+      
   } // end outer difference
 
 
@@ -161,9 +147,9 @@ module boxPCBmounting(
       // cut screw holes
       #pillars( x = pcbHoleCenX /2
               , y = pcbHoleCenY /2
-              , h = pcbPillarH +3
+              , h = pcbPillarH +4
               , rad = screwR
-              , z = wall );
+              , z = 0.5 );
         
       // show PCB it wont be rendered.
       %translate(
@@ -179,7 +165,7 @@ module boxPCBmounting(
   }
 
 
-  module pillars( // local module()
+  module pillars( // local scope module()
           x,
           y,
           h,
@@ -198,6 +184,6 @@ module boxPCBmounting(
           cylinder( h = h, r = rad );
   }
 
-} // end module boxPCBmounting
+} // end module boxPCBmounting()
 
 //----EoF boxPCBmounting.scad-------
